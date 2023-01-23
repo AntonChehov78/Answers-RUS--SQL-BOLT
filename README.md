@@ -43,81 +43,80 @@ SELECT *
 FROM Movies
 WHERE Id BETWEEN 1 AND 5;
 
--- CH3 - Queries with constraints (Pt. 2)
+-- CH3 - Запросы с ограничениями (Ч. 2)
 
--- Find all the Toy Story movies
+-- Вывести все фильмы "История игрушек"
 SELECT *
 FROM Movies
 WHERE Title LIKE "%Toy Story%";
 
--- Find all the movies directed by John Lasseter
+-- Найдите все фильмы режиссера Джона Лассетера
 SELECT *
 FROM Movies
 WHERE Director = "John Lasseter";
 
--- Find all the movies (and director) not directed by John Lasseter
+-- Найдите все фильмы (и режиссера), не снятые Джоном Лассетером
 SELECT *
 FROM Movies
 WHERE Director != "John Lasseter";
 
--- Find all the WALL-* movies
+-- Найдите все фильмы содержащие WALL
 SELECT *
 FROM Movies
 WHERE Title LIKE "%WALL%";
 
--- CH4 - Filtering and sorting Query results
+-- CH4 - Фильтрация и сортировка результатов запроса
 
--- List all directors of Pixar movies (alphabetically), without duplicates
-SELECT DISTINCT Director
+-- Перечислите всех режиссеров фильмов Pixar (в алфавитном порядке), без дубликатов
 FROM Movies
 ORDER BY Director;
 
--- List the last four Pixar movies released (ordered from most recent to least)
+-- Вывести список последних четырех выпущенных фильмов Pixar (в порядке от самых последних к наименее)
 SELECT *
 FROM Movies
 ORDER BY Year DESC
 LIMIT 4;
 
--- List the first five Pixar movies sorted alphabetically
+-- Перечислите первые пять фильмов Pixar, отсортированных в алфавитном порядке
 SELECT *
 FROM Movies
 ORDER BY Title ASC
 LIMIT 5;
 
--- List the next five Pixar movies sorted alphabetically
+-- Перечислите следующие пять фильмов Pixar, отсортированных в алфавитном порядке
 SELECT *
 FROM Movies
 ORDER BY Title ASC
 LIMIT 5
 OFFSET 5;
 
--- CH5 - Review Simple SELECT Queries
+-- CH5 - Просмотрите простые запросы ВЫБОРА
 
--- List all the Canadian cities and their populations 
+-- Перечислите все канадские города и их население
 SELECT *
 FROM North_american_cities
 WHERE Country LIKE "Canada";
 
--- Order all the cities in the United States by their latitude from north to south
+-- Упорядочите все города в Соединенных Штатах по их широте с севера на юг
 SELECT *
 FROM North_american_cities
 WHERE Country = "United States"
 ORDER BY Latitude DESC;
 
--- List all the cities west of Chicago, ordered from west to east
+-- Перечислите все города к западу от Чикаго, упорядоченные с запада на восток
 SELECT *
 FROM North_american_cities
 WHERE Longitude < -87.69
 ORDER BY Longitude ASC;
 
--- List the two largest cities in Mexico (by population)
+-- Вывести два самых населенных города в Мексике
 SELECT *
 FROM North_american_cities
 WHERE Country LIKE "Mexico"
 ORDER BY Population DESC
 LIMIT 2;
 
--- List the third and fourth largest cities (by population) in the United States and their population
+-- Перечислите третий и четвертый по величине города (по численности населения) в Соединенных Штатах и их население
 SELECT *
 FROM North_american_cities
 WHERE Country LIKE "United States"
@@ -125,34 +124,33 @@ ORDER BY Population DESC
 LIMIT 2
 OFFSET 2;
 
--- CH6 - Multi-table queries with JOINs
-
--- Find the domestic and international sales for each movie
+-- CH6 - Запросы с объединением таблиц
+-- Найдите внутренние и международные продажи для каждого фильма
 SELECT Title, International_sales, Domestic_sales
 FROM Movies JOIN Boxoffice
 ON Id=Movie_id;
 
--- Show the sales numbers for each movie that did better internationally rather than domestically
+-- Покажите цифры продаж для каждого фильма, который показал лучшие результаты на международном уровне, а не внутри страны
 SELECT Title, International_sales, Domestic_sales
 FROM Movies JOIN Boxoffice
 ON Id=Movie_id
 WHERE International_sales > Domestic_sales;
 
--- List all the movies by their ratings in descending order
+-- Перечислите все фильмы по их рейтингам в порядке убывания
 SELECT Title, Rating
 FROM Movies JOIN Boxoffice
 ON Id=Movie_id
 ORDER BY Rating DESC;
 
--- CH7 - OUTER JOIN
+-- CH7 - Внешние соединения таблиц
 
--- Find the list of all buildings that have employees
+-- Найдите список всех зданий, в которых есть сотрудники
 SELECT DISTINCT Building
 FROM Employees
 LEFT JOIN Buildings ON Building=Building_name
 WHERE Years_employed NOT NULL;
 
--- Find the list of all buildings and their capacity
+-- Найдите список всех зданий и их вместимость
 SELECT *
 FROM Buildings;
 
