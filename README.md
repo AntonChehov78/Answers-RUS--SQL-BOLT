@@ -154,132 +154,131 @@ WHERE Years_employed NOT NULL;
 SELECT *
 FROM Buildings;
 
--- List all buildings and the distinct employee roles in each building (including empty buildings)
+-- Перечислите все здания и должности сотрудников в каждом здании (включая пустующие здания)
 SELECT DISTINCT Building_name, Role 
 FROM Buildings 
 LEFT JOIN employees ON building_name = building;
 
 -- CH8 - A short note on NULLs
 
--- Find the name and role of all employees who have not been assigned to a building
+-- Найдите имена и должности всех сотрудников, которые не были назначены в здание
 SELECT *
 FROM Employees
 LEFT JOIN Buildings
 ON Building_name = Building
 WHERE Building IS NULL;
 
--- Find the names of the buildings that hold no employees
+-- В каких зданиях нет сотрудников
 SELECT *
 FROM Buildings
 LEFT JOIN Employees
 ON Building_name = Building
 WHERE Building IS NULL;
 
--- CH9 - Queries with expressions
+-- CH9 - Запросы с выражениями
 
--- List all movies and their combined sales in millions of dollars
+-- Перечислите все фильмы и их совокупные продажи в миллионах долларов
 SELECT Title, (Domestic_sales + International_sales)/1000000 AS Total_Sales_Millions
 FROM Movies
 LEFT JOIN Boxoffice ON Id=Movie_Id;
 
--- List all movies and their ratings in percent
+--Перечислите все фильмы и их рейтинги в процентах
 SELECT Title, Rating*10 as Percent
 FROM Movies
 LEFT JOIN Boxoffice ON Id=Movie_Id;
 
--- List all movies that were released on even number years
+-- Перечислите все фильмы, которые были выпущены за четные годы
 SELECT Title, Year
 FROM Movies
 LEFT JOIN Boxoffice ON Id=Movie_Id
 WHERE Year % 2 = 0;
 
--- CH10 - Queries with aggregates (Pt. 1)
+-- CH10 - Запросы с агрегатами (Ч. 1)
 
--- Find the longest time that an employee has been at the studio
+-- Найдите самое продолжительное время, в течение которого сотрудник находился в студии
 SELECT MAX(Years_employed)
 FROM Employees;
 
--- For each role, find the average number of years employed by employees in that role
+-- Для каждой должности найдите среднее количество лет, отработанных сотрудниками в этой должности
 SELECT Role, AVG(Years_Employed) 
 FROM Employees
 GROUP BY Role;
 
--- Find the total number of employee years worked in each building
+-- Найдите общее количество лет работы сотрудников в каждом здании
 SELECT Building, SUM(Years_Employed) 
 FROM Employees
 GROUP BY Building;
 
--- CH11 - Queries with aggregates (Pt. 2)
+-- CH11 - Запросы с агрегатами (Ч. 2)
 
--- Find the number of Artists in the studio (without a HAVING clause)
+-- Найдите количество художников в студии (без указания НАЛИЧИЯ)
 SELECT Role, COUNT(*) AS Number_of_Artists
 FROM Employees
 WHERE Role = "Artist";
 
--- Find the number of Employees of each role in the studio
+-- Найдите количество сотрудников каждой роли в студии
 SELECT Role, COUNT(*)
 FROM Employees
 GROUP BY Role;
 
--- Find the total number of years employed by all Engineers
+-- Найдите общее количество лет, отработанных всеми инженерами
 SELECT Role, SUM(Years_Employed)
 FROM Employees
 GROUP BY Role
 HAVING Role = "Engineer";
 
--- CH12 - Order of execution of a Query
+-- CH12 - Порядок выполнения запроса
 
--- Find the number of movies each director has directed
+-- Найдите количество фильмов, снятых каждым режиссером
 SELECT *, COUNT(Title)
 FROM Movies
 GROUP BY Director;
 
--- Find the total domestic and international sales that can be attributed to each director
+-- Найдите общий объем внутренних и международных продаж, каждого директора
 SELECT Director, sum(Domestic_sales + International_Sales) as Total_Sales
 FROM Movies
 LEFT JOIN Boxoffice ON Id = Movie_ID
 GROUP BY Director;
 
--- CH13 - Inserting rows
-
--- Add the studio's new production, Toy Story 4 to the list of movies (you can use any director)
+-- CH13 - Вставка строк
+-- Найдите общий объем внутренних и международных продаж, который можно отнести к каждому директору
 INSERT INTO Movies,
 VALUES (4, "Toy Story 4", "John Lasseter", 2017, 123);
 
--- Toy Story 4 has been released to critical acclaim! It had a rating of 8.7, and made 340 million domestically and 270 million internationally. Add the record to the  BoxOffice table. 
+-- История игрушек 4 была выпущена с одобрением критиков! У него был рейтинг 8,7, и он заработал 340 миллионов долларов внутри страны и 270 миллионов долларов на международном уровне. Добавьте запись в таблицу BoxOffice
 INSERT INTO Boxoffice
 VALUES (4, 8.7, 340000000, 270000000);
 
--- CH14 - Updating rows
+-- CH14 - Обновление строк
 
--- The director for A Bug's Life is incorrect, it was actually directed by John Lasseter
+-- Режиссер фильма "Жизнь жука" указан неверно, на самом деле режиссером был Джон Лассетер
 UPDATE Movies
 SET Director = "John Lasseter"
 WHERE Id = 2;
 
--- The year that Toy Story 2 was released is incorrect, it was actually released in 1999
+-- Год выхода "Истории игрушек 2" указан неверно, на самом деле она была выпущена в 1999 году
 UPDATE Movies
 SET Year = "1999"
 WHERE Id = 3;
 
--- Both the title and directory for Toy Story 8 is incorrect! The title should be "Toy Story 3" and it was directed by Lee Unkrich
+-- И название, и каталог для Toy Story 8 неверны! Название должно было быть "История игрушек 3", и режиссером фильма был Ли Ункрич
 UPDATE Movies
 SET Title = "Toy Story 3", Director = "Lee Unkrich"
 WHERE Id = 11;
 
--- CH15 - Deleting rows
+-- CH15 - Удаление строк
 
--- This database is getting too big, lets remove all movies that were released before 2005.
+-- Эта база данных становится слишком большой, давайте удалим все фильмы, которые были выпущены до 2005 года.
 DELETE FROM Movies
 WHERE Year < 2005;
 
--- Andrew Stanton has also left the studio, so please remove all movies directed by him.
+--Эндрю Стэнтон также покинул студию, поэтому, пожалуйста, удалите все фильмы, снятые его режиссером.
 DELETE FROM Movies
 WHERE Director = "Andrew Stanton";
 
--- CH16 - Creating Tables
+-- CH16 - Создание таблиц
 
--- Create a new table named Database with the following columns:
+-- Создайте новую таблицу с именем Database со следующими столбцами:
 -- 1. Name A string (text) describing the name of the database
 -- 2. Version A number (floating point) of the latest version of this database
 -- 3. Download_count An integer count of the number of times this database was downloaded
@@ -289,20 +288,20 @@ CREATE TABLE Database (
     Version FLOAT,
     Download_Count INTEGER);
     
--- CH17 - Altering Tables
+-- CH17 - Изменения таблиц
 
--- Add a column named Aspect_ratio with a FLOAT data type to store the aspect-ratio each movie was released in.
+-- Добавьте столбец с именем Aspect_ratio с типом данных FLOAT для хранения соотношения сторон, в котором был выпущен каждый фильм
 ALTER TABLE Movies
   ADD COLUMN Aspect_ratio FLOAT DEFAULT 3;
   
--- Add another column named Language with a TEXT data type to store the language that the movie was released in. Ensure that the default for this language is English.
+-- Добавьте еще один столбец с именем Language и типом текстовых данных, чтобы сохранить язык, на котором был выпущен фильм. Убедитесь, что по умолчанию для этого языка используется английский.
 ALTER TABLE Movies
   ADD COLUMN Language TEXT DEFAULT "English";
 
--- CH18 - Dropping Tables
+-- CH18 - Удаление таблиц
 
--- We've sadly reached the end of our lessons, lets clean up by removing the Movies table
+-- К сожалению, мы подошли к концу наших уроков, давайте наведем порядок, убрав таблицу фильмов.
 DROP TABLE Movies;
 
--- And drop the BoxOffice table as well
+-- И также удалите таблицу BoxOffice
 DROP TABLE BoxOffice;
